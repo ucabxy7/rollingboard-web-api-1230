@@ -1,0 +1,16 @@
+.env
+
+node_modules/
+dist/
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+Dockerrun.aws.json
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/*
