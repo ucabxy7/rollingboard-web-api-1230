@@ -16,4 +16,16 @@ const pool = new pg.Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+async function testConnection() {
+  try {
+    await pool.query("SELECT 1");
+    console.log("✔ Database connected successfully");
+  } catch (error) {
+    console.error("❌ Failed to connect to database:", error);
+  }
+}
+
+// 启动时测试一次连接，但不影响 Prisma 的懒加载特性
+// testConnection();
+export { pool };
 export default prisma;
