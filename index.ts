@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import prisma from "@/prisma";
+import registerRoutes from "./routes";
 
 dotenv.config();
 // override only overrides same name variables in .env.local
@@ -16,6 +17,9 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+// add all routes to the app
+registerRoutes(app);
 
 app.use("/health-check", (_req, res) => {
   res.status(200).json({ message: "OK" });
