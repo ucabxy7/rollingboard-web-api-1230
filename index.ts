@@ -1,12 +1,13 @@
-import cors from "cors";
 import dotenv from "dotenv";
+dotenv.config();
+// override only overrides same name variables in .env.local
+// dotenv.config({ path: ".env.local", override: true });
+import cors from "cors";
 import express from "express";
 import prisma from "@/prisma";
 import registerRoutes from "./routes";
 
-dotenv.config();
-// override only overrides same name variables in .env.local
-dotenv.config({ path: ".env.local", override: true });
+console.log("Actual DATABASE_URL:", process.env.DATABASE_URL);
 
 // await prisma
 //   .$connect()
@@ -14,8 +15,15 @@ dotenv.config({ path: ".env.local", override: true });
 //   .catch(err => console.error("❌ Prisma failed to connect:", err));
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  }),
+);
 
-app.use(cors());
 app.use(express.json());
 
 // add all routes to the app

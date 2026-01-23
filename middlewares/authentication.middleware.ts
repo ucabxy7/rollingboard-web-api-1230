@@ -3,10 +3,12 @@ import prisma from "@/prisma";
 import { idTokenVerifier } from "@/utils/auth.utils";
 
 export const authenticateAsUser: RequestHandler = async (req, res, next) => {
+  // console.log("authenticate triggered!");
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
     return res.status(403).json({ message: "No Valid Token Provided" });
   }
+  // console.log("token is", token);
   // sync prisma with cognito users table
   try {
     const payload = await idTokenVerifier.verify(token);
@@ -42,6 +44,7 @@ export const authenticateAsUser: RequestHandler = async (req, res, next) => {
       return next();
     }
   } catch (err) {
+    console.log("err is", err);
     return res.status(401).json({ message: "Unauthorized token" });
   }
 };
