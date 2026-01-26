@@ -12,6 +12,7 @@ export const UserSchema = z.object({
   username: z.string(),
   email: z.string(),
   cognitoId: z.string(),
+  avater: z.string().nullable(),
 })
 
 export type User = z.infer<typeof UserSchema>
