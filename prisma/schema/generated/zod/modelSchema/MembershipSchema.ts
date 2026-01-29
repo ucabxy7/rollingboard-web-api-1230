@@ -1,19 +1,18 @@
 import { z } from 'zod';
 
 /////////////////////////////////////////
-// USER SCHEMA
+// MEMBERSHIP SCHEMA
 /////////////////////////////////////////
 
-export const UserSchema = z.object({
+export const MembershipSchema = z.object({
   id: z.string().uuid(),
   createdAt: z.coerce.date(),
   updatedAt: z.coerce.date(),
   deletedAt: z.coerce.date().nullable(),
-  username: z.string(),
-  email: z.string(),
-  cognitoId: z.string(),
+  projectId: z.string(),
+  userId: z.string(),
 })
 
-export type User = z.infer<typeof UserSchema>
+export type Membership = z.infer<typeof MembershipSchema>
 
-export default UserSchema;
+export default MembershipSchema;
