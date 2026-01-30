@@ -20,4 +20,22 @@ export class ProjectService {
     ]);
     return { projects, total };
   }
+  async createProject(userId: string, name: string, description: string) {
+    return await prisma.$transaction(async tx => {
+      const project = await tx.project.create({
+        data: {
+          name,
+          description,
+          createdBy: userId,
+        },
+      });
+      await tx.membership.create({
+        data: {
+          userId,
+          projectId: project.id,
+        },
+      });
+      return project;
+    });
+  }
 }

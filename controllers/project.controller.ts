@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { ProjectService } from "@/services/project.service";
-import { ProjectResponseSchema } from "@/dto/project.dto";
+import {
+  ProjectResponseSchema,
+  CreateProjectRequestDto,
+} from "@/dto/project.dto";
 import { paginationSchema } from "@/utils/pagination.utils";
 
 const projectService = new ProjectService();
@@ -42,6 +45,25 @@ export class ProjectController {
       return res
         .status(200)
         .json({ projects: projectsResponse, pagination: paginationResponse });
+    } catch (error) {
+      return next(error);
+    }
+  };
+  createProject = async (
+    req: Request<unknown, unknown, CreateProjectRequestDto>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req.user!;
+      const { name, description } = req.body;
+      const project = await projectService.createProject(
+        user.id,
+        name,
+        description,
+      );
+      const projectResponse = await ProjectResponseSchema.parseAsync(project);
+      return res.status(201).json({ project: projectResponse });
     } catch (error) {
       return next(error);
     }
