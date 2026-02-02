@@ -33,4 +33,10 @@ projectRouter.get(
   authenticateAsUser,
   projectController.getMemberships,
 );
+
+projectRouter.delete(
+  "/projects/:projectId",
+  authenticateAsUser,
+  projectController.deleteProject,
+);
 export default projectRouter;

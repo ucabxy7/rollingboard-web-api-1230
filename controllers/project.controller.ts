@@ -110,4 +110,18 @@ export class ProjectController {
       return next(error);
     }
   };
+  deleteProject = async (
+    req: Request<{ projectId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req.user!;
+      const { projectId } = req.params;
+      await projectService.deleteProject(projectId, user.id);
+      return res.status(204).json();
+    } catch (error) {
+      return next(error);
+    }
+  };
 }

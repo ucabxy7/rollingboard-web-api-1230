@@ -14,14 +14,24 @@ export class ProjectService {
       Number.isInteger(pageSize) &&
       page > 0 &&
       pageSize > 0;
+
+    const where = {
+      deletedAt: null,
+      memberships: {
+        some: {
+          userId,
+          deletedAt: null,
+        },
+      },
+    };
     const [projects, total] = await Promise.all([
       prisma.project.findMany({
-        where: { memberships: { some: { userId, deletedAt: null } } },
+        where,
         skip: shouldPaginate ? (page - 1) * pageSize : undefined,
         take: shouldPaginate ? pageSize : undefined,
       }),
       prisma.project.count({
-        where: { memberships: { some: { userId, deletedAt: null } } },
+        where,
       }),
     ]);
     return { projects, total };
@@ -48,7 +58,7 @@ export class ProjectService {
   async getProjectById(projectId: string, userId: string) {
     const uniqueProject = await prisma.project.findFirst({
       where: { id: projectId, deletedAt: null },
-      include: { memberships: true },
+      include: { memberships: { where: { deletedAt: null } } },
     });
 
     if (!uniqueProject) {
@@ -87,5 +97,19 @@ export class ProjectService {
       include: { user: true },
     });
     return memberships;
+  }
+  async deleteProject(projectId: string, userId: string) {
+    const now = new Date();
+    await prisma.$transaction(async tx => {
+      await this.getProjectById(projectId, userId);
+      await tx.project.update({
+        where: { id: projectId },
+        data: { deletedAt: now },
+      });
+      await tx.membership.updateMany({
+        where: { projectId, deletedAt: null },
+        data: { deletedAt: now },
+      });
+    });
   }
 }
