@@ -9,6 +9,15 @@ export type CreateProjectRequestDto = z.infer<
   typeof CreateProjectRequestSchema
 >;
 
+export const UpdateProjectRequestSchema = CreateProjectRequestSchema.pick({
+  name: true,
+  description: true,
+}).partial();
+
+export type UpdateProjectRequestDto = z.infer<
+  typeof UpdateProjectRequestSchema
+>;
+
 export const ProjectResponseSchema = z.object({
   id: z.string().uuid(),
   name: z.string(),

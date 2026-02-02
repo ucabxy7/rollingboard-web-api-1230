@@ -1,4 +1,10 @@
 import prisma from "@/prisma";
+import {
+  NotFoundError,
+  UnauthorizedError,
+  BadRequestError,
+} from "@/utils/error.utils";
+
 export class ProjectService {
   async getProjects(userId: string, page?: number, pageSize?: number) {
     const shouldPaginate =
@@ -37,5 +43,41 @@ export class ProjectService {
       });
       return project;
     });
+  }
+
+  async getProjectById(projectId: string, userId: string) {
+    const uniqueProject = await prisma.project.findFirst({
+      where: { id: projectId, deletedAt: null },
+      include: { memberships: true },
+    });
+
+    if (!uniqueProject) {
+      throw new NotFoundError("Project not found!");
+    }
+    if (!uniqueProject.memberships.some(m => m.userId === userId)) {
+      throw new UnauthorizedError(
+        "You are not authorized to access this project!",
+      );
+    }
+    return uniqueProject;
+  }
+  async updateProject(
+    projectId: string,
+    userId: string,
+    payload: {
+      name?: string;
+      description?: string;
+    },
+  ) {
+    const { name, description } = payload;
+    await this.getProjectById(projectId, userId);
+    const updatedProject = await prisma.project.update({
+      where: { id: projectId },
+      data: {
+        name,
+        description,
+      },
+    });
+    return updatedProject;
   }
 }

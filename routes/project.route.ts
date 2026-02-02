@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { authenticateAsUser } from "@/middlewares/authentication.middleware";
 import { ProjectController } from "@/controllers/project.controller";
-import { CreateProjectRequestSchema } from "@/dto/project.dto";
+import {
+  CreateProjectRequestSchema,
+  UpdateProjectRequestSchema,
+} from "@/dto/project.dto";
 import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodymiddleware";
 
 const projectRouter = Router();
@@ -18,3 +21,10 @@ projectRouter.post(
   projectController.createProject,
 );
 export default projectRouter;
+
+projectRouter.patch(
+  "/projects/:projectId",
+  authenticateAsUser,
+  validateRequestBodyMiddleware(UpdateProjectRequestSchema),
+  projectController.updateProject,
+);

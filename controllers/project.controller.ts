@@ -3,6 +3,7 @@ import { ProjectService } from "@/services/project.service";
 import {
   ProjectResponseSchema,
   CreateProjectRequestDto,
+  UpdateProjectRequestDto,
 } from "@/dto/project.dto";
 import { paginationSchema } from "@/utils/pagination.utils";
 
@@ -64,6 +65,27 @@ export class ProjectController {
       );
       const projectResponse = await ProjectResponseSchema.parseAsync(project);
       return res.status(201).json({ project: projectResponse });
+    } catch (error) {
+      return next(error);
+    }
+  };
+  updateProject = async (
+    req: Request<{ projectId: string }, unknown, UpdateProjectRequestDto>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req.user!;
+      const { projectId } = req.params;
+      const payload = req.body;
+      const updatedProject = await projectService.updateProject(
+        projectId,
+        user.id,
+        payload,
+      );
+      const projectResponse =
+        await ProjectResponseSchema.parseAsync(updatedProject);
+      return res.status(200).json({ project: projectResponse });
     } catch (error) {
       return next(error);
     }
