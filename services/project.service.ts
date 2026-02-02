@@ -80,4 +80,12 @@ export class ProjectService {
     });
     return updatedProject;
   }
+  async getMembershipsOfaProject(projectId: string, userId: string) {
+    await this.getProjectById(projectId, userId);
+    const memberships = await prisma.membership.findMany({
+      where: { projectId, deletedAt: null },
+      include: { user: true },
+    });
+    return memberships;
+  }
 }

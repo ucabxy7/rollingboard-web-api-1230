@@ -20,7 +20,6 @@ projectRouter.post(
   validateRequestBodyMiddleware(CreateProjectRequestSchema),
   projectController.createProject,
 );
-export default projectRouter;
 
 projectRouter.patch(
   "/projects/:projectId",
@@ -28,3 +27,10 @@ projectRouter.patch(
   validateRequestBodyMiddleware(UpdateProjectRequestSchema),
   projectController.updateProject,
 );
+
+projectRouter.get(
+  "/projects/:projectId/memberships",
+  authenticateAsUser,
+  projectController.getMemberships,
+);
+export default projectRouter;

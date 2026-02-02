@@ -7,7 +7,7 @@ const userRouter = Router();
 const usersController = new UsersController();
 userRouter.get("/users/me", authenticateAsUser, usersController.getCurrentUser);
 userRouter.post(
-  "users/search",
+  "/users/search",
   authenticateAsUser,
   usersController.searchUsers,
 );
