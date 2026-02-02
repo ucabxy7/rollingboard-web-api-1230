@@ -6,6 +6,7 @@ import {
   UpdateProjectRequestSchema,
 } from "@/dto/project.dto";
 import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodymiddleware";
+import { AddMembersRequestSchema } from "@/dto/membership.dto";
 
 const projectRouter = Router();
 const projectController = new ProjectController();
@@ -38,5 +39,12 @@ projectRouter.delete(
   "/projects/:projectId",
   authenticateAsUser,
   projectController.deleteProject,
+);
+
+projectRouter.post(
+  "/projects/:projectId/add-members",
+  authenticateAsUser,
+  validateRequestBodyMiddleware(AddMembersRequestSchema),
+  projectController.addMembersToProject,
 );
 export default projectRouter;

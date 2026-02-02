@@ -112,4 +112,45 @@ export class ProjectService {
       });
     });
   }
+  async addMembersToProject(
+    projectId: string,
+    userId: string,
+    userIds: string[],
+  ) {
+    await this.getProjectById(projectId, userId);
+    // Check existing memberships (make sure none of userId already in memberships of this project)
+    const existingMemberships = await prisma.membership.findMany({
+      where: { projectId, userId: { in: userIds }, deletedAt: null },
+    });
+    if (existingMemberships.length > 0) {
+      throw new BadRequestError(
+        "Some users are already members of the project",
+      );
+    }
+    // use transaction to make sure: (1) new user are added (2) once-added users are restored(deletedAt set to null)
+    await prisma.$transaction(async tx => {
+      for (const userId of userIds) {
+        await tx.membership.upsert({
+          where: {
+            projectId_userId: {
+              projectId,
+              userId,
+            },
+          },
+          update: {
+            deletedAt: null,
+          },
+          create: {
+            projectId,
+            userId,
+          },
+        });
+      }
+    });
+    const updatedMemberships = await this.getMembershipsOfaProject(
+      projectId,
+      userId,
+    );
+    return updatedMemberships;
+  }
 }

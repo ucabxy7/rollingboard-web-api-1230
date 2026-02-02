@@ -5,7 +5,10 @@ import {
   CreateProjectRequestDto,
   UpdateProjectRequestDto,
 } from "@/dto/project.dto";
-import { MembersResponseSchema } from "@/dto/membership.dto";
+import {
+  MembersResponseSchema,
+  AddMembersRequestDto,
+} from "@/dto/membership.dto";
 import { paginationSchema } from "@/utils/pagination.utils";
 
 const projectService = new ProjectService();
@@ -120,6 +123,27 @@ export class ProjectController {
       const { projectId } = req.params;
       await projectService.deleteProject(projectId, user.id);
       return res.status(204).json();
+    } catch (error) {
+      return next(error);
+    }
+  };
+  addMembersToProject = async (
+    req: Request<{ projectId: string }, unknown, AddMembersRequestDto>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const user = req.user!;
+      const { projectId } = req.params;
+      const { userIds } = req.body;
+      const updatedMemberships = await projectService.addMembersToProject(
+        projectId,
+        user.id,
+        userIds,
+      );
+      const membershipResponse =
+        await MembersResponseSchema.array().parseAsync(updatedMemberships);
+      return res.status(201).json({ memberships: membershipResponse });
     } catch (error) {
       return next(error);
     }
