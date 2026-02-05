@@ -5,7 +5,7 @@ import {
   CreateProjectRequestSchema,
   UpdateProjectRequestSchema,
 } from "@/dto/project.dto";
-import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodymiddleware";
+import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodyMiddleware";
 import { AddMembersRequestSchema } from "@/dto/membership.dto";
 
 const projectRouter = Router();

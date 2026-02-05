@@ -10,6 +10,7 @@ model Project {
   createdByUser User  @relation(fields: [createdBy], references:[id])
 
   memberships Membership[]
+  columns   Column[]
 
   @@index([name])
   @@index([description])
@@ -31,4 +32,23 @@ model Membership {
   @@index([projectId])
   @@index([userId])
   @@map("memberships")
+}
+model Column {
+  id        String    @id @default(uuid())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  name      String
+  order     Int
+
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id])
+
+  // future
+  // tasks     Task[]
+
+  @@index([projectId])
+  @@index([projectId, order])
+  @@map("columns")
 }
