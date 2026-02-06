@@ -5,7 +5,9 @@ import {
   CreateColumnRequestParamsDto,
   CreateColumnRequestBodyDto,
   UpdateColumnNameRequestBodyDto,
+  SwapColumnOrderRequestBodyDto,
 } from "@/dto/column.dto";
+import { RequiredKeys } from "@prisma/client/runtime/library";
 
 // frontend: request dto = backend: request dto
 // backend: response schema = frontend : domain model
@@ -63,6 +65,19 @@ export class ColumnController {
       const columnResponse =
         await ColumnResponseSchema.parseAsync(updatedColumn);
       return res.status(200).json({ column: columnResponse });
+    } catch (error) {
+      return next(error);
+    }
+  };
+  swapColumnOrder = async (
+    req: Request<{ projectId: string }, unknown, SwapColumnOrderRequestBodyDto>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { projectId } = req.params;
+      await columnService.swapOrder(projectId, req.body);
+      return res.status(200).json({ success: true });
     } catch (error) {
       return next(error);
     }

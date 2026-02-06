@@ -8,6 +8,7 @@ import {
 import {
   CreateColumnRequestBodyDto,
   UpdateColumnNameRequestBodyDto,
+  SwapColumnOrderRequestBodyDto,
 } from "@/dto/column.dto";
 
 export class ColumnService {
@@ -65,7 +66,33 @@ export class ColumnService {
     });
     return updatedColumn;
   }
-  // update 2: only update order
+  // update 2: only swap order
+  async swapOrder(projectId: string, input: SwapColumnOrderRequestBodyDto) {
+    const [idA, idB] = input.ids;
+    if (idA === idB) return;
+    await prisma.$transaction(async tx => {
+      const colA = await tx.column.findFirst({
+        where: { id: idA, projectId, deletedAt: null },
+      });
+      const colB = await tx.column.findFirst({
+        where: { id: idB, projectId, deletedAt: null },
+      });
+      if (!colA || !colB) {
+        throw new NotFoundError("Invalid column ids provided");
+      }
+      // swap order
+      const tempOrder = colA.order;
+
+      await tx.column.update({
+        where: { id: idA },
+        data: { order: colB.order },
+      });
+      await tx.column.update({
+        where: { id: idB },
+        data: { order: tempOrder },
+      });
+    });
+  }
 
   // soft delete
   async deleteColumn(columnId: string) {

@@ -5,6 +5,7 @@ import {
   CreateColumnRequestBodySchema,
   CreateColumnRequestParamsSchema,
   UpdateColumnNameRequestBodySchema,
+  SwapColumnOrderRequestBodySchema,
 } from "@/dto/column.dto";
 import { validateRequestParamsMiddleware } from "@/middlewares/validateRequestParamsMiddleware";
 import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodyMiddleware";
@@ -31,6 +32,13 @@ columnRouter.patch(
   authenticateAsUser,
   validateRequestBodyMiddleware(UpdateColumnNameRequestBodySchema),
   columnController.updateColumnName,
+);
+
+columnRouter.patch(
+  "/projects/:projectId/columns/swap-order",
+  authenticateAsUser,
+  validateRequestBodyMiddleware(SwapColumnOrderRequestBodySchema),
+  columnController.swapColumnOrder,
 );
 
 columnRouter.delete(

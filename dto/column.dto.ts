@@ -13,6 +13,14 @@ export const UpdateColumnNameRequestBodySchema = z.object({
   name: z.string().min(1, "Column name is required"),
 });
 
+export const SwapColumnOrderRequestBodySchema = z.object({
+  ids: z
+    .tuple([z.string().uuid(), z.string().uuid()])
+    .refine(([a, b]) => a !== b, {
+      message: "ids must be two different column ids",
+    }),
+});
+
 export const ColumnResponseSchema = z.object({
   id: z.string().uuid("invalid column id"),
   name: z.string(),
@@ -29,4 +37,9 @@ export type CreateColumnRequestBodyDto = z.infer<
 export type UpdateColumnNameRequestBodyDto = z.infer<
   typeof UpdateColumnNameRequestBodySchema
 >;
+
+export type SwapColumnOrderRequestBodyDto = z.infer<
+  typeof SwapColumnOrderRequestBodySchema
+>;
+
 export type ColumnResponseDto = z.infer<typeof ColumnResponseSchema>;
