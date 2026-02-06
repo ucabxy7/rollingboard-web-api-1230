@@ -44,4 +44,17 @@ export class ColumnService {
     });
     return column;
   }
+  async deleteColumn(columnId: string) {
+    const column = await prisma.column.findFirst({
+      where: { id: columnId, deletedAt: null },
+    });
+    if (!column) {
+      throw new NotFoundError("Column not found");
+    }
+    await prisma.column.update({
+      where: { id: columnId },
+      data: { deletedAt: new Date() },
+    });
+    // TODO: also soft delete all tasks under this column (after introducing tasks)
+  }
 }

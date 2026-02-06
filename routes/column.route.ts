@@ -24,5 +24,10 @@ columnRouter.post(
   validateRequestBodyMiddleware(CreateColumnRequestBodySchema),
   columnController.createColumn,
 );
+columnRouter.delete(
+  "/columns/:columnId",
+  authenticateAsUser,
+  columnController.deleteColumn,
+);
 
 export default columnRouter;

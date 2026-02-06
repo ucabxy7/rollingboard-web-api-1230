@@ -47,4 +47,17 @@ export class ColumnController {
       return next(error);
     }
   };
+  deleteColumn = async (
+    req: Request<{ columnId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { columnId } = req.params;
+      await columnService.deleteColumn(columnId);
+      return res.status(204).json();
+    } catch (error) {
+      return next(error);
+    }
+  };
 }
