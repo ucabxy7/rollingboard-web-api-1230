@@ -5,6 +5,11 @@ import {
   BadRequestError,
 } from "@/utils/error.utils";
 
+import {
+  CreateColumnRequestBodyDto,
+  UpdateColumnNameRequestBodyDto,
+} from "@/dto/column.dto";
+
 export class ColumnService {
   async getColumns(projectId: string) {
     const project = await prisma.project.findFirst({
@@ -20,7 +25,8 @@ export class ColumnService {
     return columns;
   }
 
-  async createColumn(projectId: string, name: string, order: number) {
+  async createColumn(projectId: string, input: CreateColumnRequestBodyDto) {
+    const { name, order } = input;
     const project = await prisma.project.findFirst({
       where: { id: projectId, deletedAt: null },
     });
@@ -44,6 +50,24 @@ export class ColumnService {
     });
     return column;
   }
+  // update 1: only update name
+  async updateName(columnId: string, input: UpdateColumnNameRequestBodyDto) {
+    const { name } = input;
+    const column = await prisma.column.findFirst({
+      where: { id: columnId, deletedAt: null },
+    });
+    if (!column) {
+      throw new NotFoundError("Column not found");
+    }
+    const updatedColumn = await prisma.column.update({
+      where: { id: columnId },
+      data: { name },
+    });
+    return updatedColumn;
+  }
+  // update 2: only update order
+
+  // soft delete
   async deleteColumn(columnId: string) {
     const column = await prisma.column.findFirst({
       where: { id: columnId, deletedAt: null },

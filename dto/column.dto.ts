@@ -9,6 +9,10 @@ export const CreateColumnRequestBodySchema = z.object({
   order: z.number().int().nonnegative(),
 });
 
+export const UpdateColumnNameRequestBodySchema = z.object({
+  name: z.string().min(1, "Column name is required"),
+});
+
 export const ColumnResponseSchema = z.object({
   id: z.string().uuid("invalid column id"),
   name: z.string(),
@@ -20,5 +24,9 @@ export type CreateColumnRequestParamsDto = z.infer<
 >;
 export type CreateColumnRequestBodyDto = z.infer<
   typeof CreateColumnRequestBodySchema
+>;
+
+export type UpdateColumnNameRequestBodyDto = z.infer<
+  typeof UpdateColumnNameRequestBodySchema
 >;
 export type ColumnResponseDto = z.infer<typeof ColumnResponseSchema>;

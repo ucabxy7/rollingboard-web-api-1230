@@ -4,6 +4,7 @@ import { ColumnController } from "@/controllers/column.controller";
 import {
   CreateColumnRequestBodySchema,
   CreateColumnRequestParamsSchema,
+  UpdateColumnNameRequestBodySchema,
 } from "@/dto/column.dto";
 import { validateRequestParamsMiddleware } from "@/middlewares/validateRequestParamsMiddleware";
 import { validateRequestBodyMiddleware } from "@/middlewares/validateRequestBodyMiddleware";
@@ -24,6 +25,14 @@ columnRouter.post(
   validateRequestBodyMiddleware(CreateColumnRequestBodySchema),
   columnController.createColumn,
 );
+
+columnRouter.patch(
+  "/columns/:columnId",
+  authenticateAsUser,
+  validateRequestBodyMiddleware(UpdateColumnNameRequestBodySchema),
+  columnController.updateColumnName,
+);
+
 columnRouter.delete(
   "/columns/:columnId",
   authenticateAsUser,
