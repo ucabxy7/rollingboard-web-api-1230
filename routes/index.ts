@@ -3,8 +3,15 @@ import userRouter from "./user.route";
 import projectRouter from "./project.route";
 import membershipRouter from "./membership.route";
 import columnRouter from "./column.route";
+import taskRouter from "./task.route";
 
-const ROUTES = [userRouter, projectRouter, membershipRouter, columnRouter];
+const ROUTES = [
+  userRouter,
+  projectRouter,
+  membershipRouter,
+  columnRouter,
+  taskRouter,
+];
 
 const registerRoutes = (app: Express) => {
   ROUTES.forEach(router => {

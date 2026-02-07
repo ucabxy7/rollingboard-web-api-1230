@@ -5,10 +5,10 @@ export const publicUserSchema = z.object({
   username: z.string(),
   email: z.string().email(),
 });
-export const TaskIdRequestParamsSchema = z.object({
+export const taskIdRequestParamsSchema = z.object({
   id: z.string().uuid("Invalid task id"),
 });
-export const TaskResponseSchema = z.object({
+export const taskResponseSchema = z.object({
   id: z.string().uuid("Invalid task id"),
   name: z.string(),
   description: z.string(),
@@ -22,27 +22,26 @@ export const createTaskRequestBodySchema = z.object({
   columnId: z.string().uuid("Invalid column Id"),
   assignedToId: z.string().uuid("Invalid assignedTo id").optional(),
 });
-export const createTaskResponseSchema = TaskResponseSchema;
+export const createTaskResponseSchema = taskResponseSchema;
 
-// 2.update schema
-export const updateTaskRequestParamsSchema = TaskIdRequestParamsSchema;
+// 2.update schema (content only, no order)
+export const updateTaskRequestParamsSchema = taskIdRequestParamsSchema;
 export const updateTaskRequestBodySchema = z
   .object({
     name: z.string().min(1, "Task name is required").optional(),
     description: z.string().min(1, "Task description is required").optional(),
-    columnId: z.string().uuid("Invalid column Id").optional(),
     assignedToId: z.string().uuid("Invalid assignedTo id").optional(),
   })
   .refine(data => Object.keys(data).length > 0, {
     message: "At least one field must be provided",
   });
-export const udpateTaskResponseSchema = TaskResponseSchema;
+export const udpateTaskResponseSchema = taskResponseSchema;
 // 3.get schema
-export const getTaskRequestParamsSchema = TaskIdRequestParamsSchema;
-export const getTaskResponseSchema = TaskResponseSchema;
+export const getTaskRequestParamsSchema = taskIdRequestParamsSchema;
+export const getTaskResponseSchema = taskResponseSchema;
 
 // -- public dto
-export type TaskResponseDto = z.infer<typeof TaskResponseSchema>;
+export type TaskResponseDto = z.infer<typeof taskResponseSchema>;
 
 //1. create dto
 export type CreateTaskRequestBodyDto = z.infer<

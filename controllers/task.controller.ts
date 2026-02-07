@@ -1,8 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { TaskService } from "@/services/task.service";
 import {
-  createTaskResponseSchema,
   CreateTaskRequestBodyDto,
+  UpdateTaskRequestBodyDto,
+  createTaskResponseSchema,
+  udpateTaskResponseSchema,
+  taskResponseSchema,
 } from "@/dto/task.dto";
 
 // frontend: request dto = backend: request dto
@@ -22,6 +25,36 @@ export class TaskController {
       const newtask = await taskService.createTask(req.body);
       const response = await createTaskResponseSchema.parseAsync(newtask);
       return res.status(201).json({ task: response });
+    } catch (error) {
+      return next(error);
+    }
+  };
+  updateTask = async (
+    req: Request<{ taskId: string }, unknown, UpdateTaskRequestBodyDto>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { taskId } = req.params;
+      const updatedTask = await taskService.updateTask(taskId, req.body);
+      const response = await udpateTaskResponseSchema.parseAsync(updatedTask);
+      return res.status(200).json({ task: response });
+    } catch (error) {
+      return next(error);
+    }
+  };
+  getTasks = async (
+    req: Request<{ columnId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { columnId } = req.params;
+      const fetchedTasks = await taskService.getTasks(columnId);
+      const response = await taskResponseSchema
+        .array()
+        .parseAsync(fetchedTasks);
+      return res.status(200).json({ tasks: response });
     } catch (error) {
       return next(error);
     }

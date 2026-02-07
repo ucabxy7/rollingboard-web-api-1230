@@ -51,7 +51,7 @@ export class TaskService {
         description,
         columnId,
         position,
-        assignedToId: assignedToId ?? null,
+        assignedToId: assignedToId ?? undefined,
       },
       include: {
         assignedTo: {
@@ -64,5 +64,59 @@ export class TaskService {
       },
     });
     return task;
+  }
+  // this update do not change position
+  async updateTask(taskId: string, input: UpdateTaskRequestBodyDto) {
+    const { name, description, assignedToId } = input;
+    // validate existing task
+    const task = await prisma.task.findFirst({
+      where: { id: taskId, deletedAt: null },
+    });
+    if (!task) {
+      throw new NotFoundError("task not found");
+    }
+    // validate assignee
+    if (assignedToId) {
+      const user = await prisma.user.findFirst({
+        where: { id: assignedToId, deletedAt: null },
+        select: { id: true },
+      });
+      if (!user) {
+        throw new NotFoundError("assignedTo user not found");
+      }
+    }
+    return prisma.task.update({
+      where: { id: taskId },
+      data: {
+        name,
+        description,
+        assignedToId: assignedToId ?? undefined,
+      },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
+    });
+  }
+  async getTasks(columnId: string) {
+    // return tasks
+    return prisma.task.findMany({
+      where: { columnId, deletedAt: null },
+      orderBy: { position: "asc" },
+      include: {
+        assignedTo: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+          },
+        },
+      },
+    });
   }
 }
