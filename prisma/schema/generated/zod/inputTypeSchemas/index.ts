@@ -2,6 +2,7 @@ export { TransactionIsolationLevelSchema } from './TransactionIsolationLevelSche
 export { ProjectScalarFieldEnumSchema } from './ProjectScalarFieldEnumSchema';
 export { MembershipScalarFieldEnumSchema } from './MembershipScalarFieldEnumSchema';
 export { ColumnScalarFieldEnumSchema } from './ColumnScalarFieldEnumSchema';
+export { TaskScalarFieldEnumSchema } from './TaskScalarFieldEnumSchema';
 export { UserScalarFieldEnumSchema } from './UserScalarFieldEnumSchema';
 export { SortOrderSchema } from './SortOrderSchema';
 export { QueryModeSchema } from './QueryModeSchema';
@@ -9,4 +10,5 @@ export { NullsOrderSchema } from './NullsOrderSchema';
 export { ProjectOrderByRelevanceFieldEnumSchema } from './ProjectOrderByRelevanceFieldEnumSchema';
 export { MembershipOrderByRelevanceFieldEnumSchema } from './MembershipOrderByRelevanceFieldEnumSchema';
 export { ColumnOrderByRelevanceFieldEnumSchema } from './ColumnOrderByRelevanceFieldEnumSchema';
+export { TaskOrderByRelevanceFieldEnumSchema } from './TaskOrderByRelevanceFieldEnumSchema';
 export { UserOrderByRelevanceFieldEnumSchema } from './UserOrderByRelevanceFieldEnumSchema';
