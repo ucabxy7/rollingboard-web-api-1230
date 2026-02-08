@@ -59,4 +59,17 @@ export class TaskController {
       return next(error);
     }
   };
+  deleteTask = async (
+    req: Request<{ taskId: string }>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const { taskId } = req.params;
+      await taskService.deleteTask(taskId);
+      return res.status(204).json();
+    } catch (error) {
+      return next(error);
+    }
+  };
 }

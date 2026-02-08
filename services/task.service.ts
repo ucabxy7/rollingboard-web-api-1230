@@ -9,7 +9,7 @@ import {
   CreateTaskRequestBodyDto,
   UpdateTaskRequestBodyDto,
 } from "@/dto/task.dto";
-import { tuple } from "zod";
+import { date } from "zod";
 
 export class TaskService {
   async createTask(input: CreateTaskRequestBodyDto) {
@@ -70,18 +70,17 @@ export class TaskService {
     const { name, description, assignedToId } = input;
     // validate existing task
     const task = await prisma.task.findFirst({
-      where: { id: taskId, deletedAt: null },
+      where: { id: taskId, deletedAt: null, column: { deletedAt: null } },
     });
     if (!task) {
       throw new NotFoundError("task not found");
     }
     // validate assignee
     if (assignedToId) {
-      const user = await prisma.user.findFirst({
+      const countExistingUser = await prisma.user.count({
         where: { id: assignedToId, deletedAt: null },
-        select: { id: true },
       });
-      if (!user) {
+      if (countExistingUser == 0) {
         throw new NotFoundError("assignedTo user not found");
       }
     }
@@ -104,7 +103,16 @@ export class TaskService {
     });
   }
   async getTasks(columnId: string) {
-    // return tasks
+    // only getTasks which are under valid column.
+    const column = await prisma.column.findFirst({
+      where: { id: columnId, deletedAt: null },
+      select: { id: true },
+    });
+    if (!column) {
+      throw new NotFoundError("the related column not found");
+    }
+
+    // return tasks belong to the valid column .
     return prisma.task.findMany({
       where: { columnId, deletedAt: null },
       orderBy: { position: "asc" },
@@ -118,5 +126,22 @@ export class TaskService {
         },
       },
     });
+  }
+  async deleteTask(taskId: string) {
+    // task itself
+    const task = await prisma.task.findFirst({
+      where: { id: taskId, deletedAt: null },
+      select: { id: true },
+    });
+    if (!task) {
+      throw new NotFoundError("task not found");
+    }
+    await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    // find related column and delete task from it.
   }
 }

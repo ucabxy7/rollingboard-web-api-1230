@@ -24,6 +24,12 @@ taskRouter.patch(
   taskController.updateTask,
 );
 
+taskRouter.delete(
+  "task/:taskId",
+  authenticateAsUser,
+  taskController.deleteTask,
+);
+
 taskRouter.get(
   "/column/:columnId/tasks",
   authenticateAsUser,
