@@ -25,7 +25,7 @@ taskRouter.patch(
 );
 
 taskRouter.delete(
-  "task/:taskId",
+  "/task/:taskId",
   authenticateAsUser,
   taskController.deleteTask,
 );
