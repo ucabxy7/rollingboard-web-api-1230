@@ -9,6 +9,8 @@ dist/
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 Dockerrun.aws.json
+Dockerrun.aws.json.zip
+deployment-flow.md
 
 # macOS
 .DS_Store
