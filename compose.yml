@@ -10,6 +10,10 @@ services:
     ports:
       - 8080:8080
     env_file: .env
+    environment:
+      - RUNNING_ENV=docker
+      # If backend is running in docker, then we access the database in docker between dockers
+      - DATABASE_URL=postgresql://postgres:postgres@database:5432/rolling-board-bootstrap-db
     depends_on:
       database:
         condition: service_healthy

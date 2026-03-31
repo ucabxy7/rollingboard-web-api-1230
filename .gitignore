@@ -11,9 +11,11 @@ dist/
 Dockerrun.aws.json
 Dockerrun.aws.json.zip
 deployment-flow.md
+*.zip
 
 # macOS
 .DS_Store
 
 # VSCode
 .vscode/*
+
